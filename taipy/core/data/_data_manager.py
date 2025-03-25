@@ -87,13 +87,13 @@ class _DataManager(_Manager[DataNode], _VersionMixin):
     def _create(
         cls, data_node_config: DataNodeConfig, owner_id: Optional[str], parent_ids: Optional[Set[str]]
     ) -> DataNode:
-        data_node = cls.__create(data_node_config, owner_id, parent_ids)
+        data_node = cls.__instantiate(data_node_config, owner_id, parent_ids)
         cls._repository._save(data_node)
         Notifier.publish(_make_event(data_node, EventOperation.CREATION))
         return data_node
 
     @classmethod
-    def __create(
+    def __instantiate(
         cls, data_node_config: DataNodeConfig, owner_id: Optional[str], parent_ids: Optional[Set[str]]
     ) -> DataNode:
         try:
