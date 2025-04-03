@@ -18,6 +18,7 @@ import pandas as pd
 import pytest
 
 from taipy import Scope
+from taipy.core.data._data_manager_factory import _DataManagerFactory
 from taipy.core.data.csv import CSVDataNode
 from taipy.core.exceptions.exceptions import NoData
 
@@ -33,9 +34,9 @@ class MyCustomObject:
 
 def test_raise_no_data_with_header():
     not_existing_csv = CSVDataNode("foo", Scope.SCENARIO, properties={"path": "WRONG.csv", "has_header": True})
+    assert not_existing_csv.read() is None
     with pytest.raises(NoData):
-        assert not_existing_csv.read() is None
-        not_existing_csv.read_or_raise()
+        _DataManagerFactory._build_manager()._read(not_existing_csv)
 
 
 def test_read_with_header_pandas():
@@ -75,9 +76,9 @@ def test_read_with_header_custom_exposed_type():
 
 def test_raise_no_data_without_header():
     not_existing_csv = CSVDataNode("foo", Scope.SCENARIO, properties={"path": "WRONG.csv", "has_header": False})
+    assert not_existing_csv.read() is None
     with pytest.raises(NoData):
-        assert not_existing_csv.read() is None
-        not_existing_csv.read_or_raise()
+        _DataManagerFactory._build_manager()._read(not_existing_csv)
 
 
 def test_read_without_header_pandas():

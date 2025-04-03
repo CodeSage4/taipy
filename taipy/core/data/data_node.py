@@ -395,27 +395,16 @@ class DataNode(_Entity, _Labeled):
         """
         raise NotImplementedError
 
-    def read_or_raise(self) -> Any:
-        """Read the data referenced by this data node.
-
-        Returns:
-            The data referenced by this data node.
-
-        Raises:
-            NoData^: If the data has not been written yet.
-        """
-        if not self.last_edit_date:
-            raise NoData(f"Data node {self.id} from config {self.config_id} has not been written yet.")
-        return self._read()
-
     def read(self) -> Any:
         """Read the data referenced by this data node.
 
         Returns:
             The data referenced by this data node. None if the data has not been written yet.
         """
+        from ._data_manager_factory import _DataManagerFactory
+
         try:
-            return self.read_or_raise()
+            return _DataManagerFactory._build_manager()._read(self)
         except NoData:
             self._logger.warning(
                 f"Data node {self.id} from config {self.config_id} is being read but has never been written."
@@ -432,8 +421,6 @@ class DataNode(_Entity, _Labeled):
             **kwargs (Any): Extra information to attach to the edit document
                 corresponding to this write.
         """
-        from ._data_manager_factory import _DataManagerFactory
-
         if (
             editor_id
             and self.edit_in_progress
@@ -441,10 +428,10 @@ class DataNode(_Entity, _Labeled):
             and (not self.editor_expiration_date or self.editor_expiration_date > datetime.now())
         ):
             raise DataNodeIsBeingEdited(self.id, self.editor_id)
-        self._append(data)
-        self.track_edit(editor_id=editor_id, comment=comment, **kwargs)
-        self.unlock_edit()
-        _DataManagerFactory._build_manager()._update(self)
+
+        from ._data_manager_factory import _DataManagerFactory
+
+        _DataManagerFactory._build_manager()._append(self, data, editor_id, comment, **kwargs)
 
     def write(
         self,
@@ -473,12 +460,10 @@ class DataNode(_Entity, _Labeled):
             and (not self.editor_expiration_date or self.editor_expiration_date > datetime.now())
         ):
             raise DataNodeIsBeingEdited(self.id, self.editor_id)
-        self._write(data)
-        self.track_edit(job_id=job_id, editor_id=editor_id, comment=comment, **kwargs)
-        self.unlock_edit()
+
         from ._data_manager_factory import _DataManagerFactory
 
-        _DataManagerFactory._build_manager()._update(self)
+        _DataManagerFactory._build_manager()._write(self, data, job_id, editor_id, comment, **kwargs)
 
     def track_edit(
         self,

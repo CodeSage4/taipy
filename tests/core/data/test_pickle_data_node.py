@@ -117,9 +117,9 @@ class TestPickleDataNodeEntity:
     def test_read_and_write(self):
         no_data_dn = PickleDataNode("foo", Scope.SCENARIO)
         _DataManagerFactory._build_manager()._repository._save(no_data_dn)
+        assert no_data_dn.read() is None
         with pytest.raises(NoData):
-            assert no_data_dn.read() is None
-            no_data_dn.read_or_raise()
+            _DataManagerFactory._build_manager()._read(no_data_dn)
         pickle_str = PickleDataNode("foo", Scope.SCENARIO, properties={"default_data": "bar"})
         _DataManagerFactory._build_manager()._repository._save(pickle_str)
         assert isinstance(pickle_str.read(), str)

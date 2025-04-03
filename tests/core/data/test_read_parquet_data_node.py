@@ -68,9 +68,9 @@ class TestReadParquetDataNode:
         not_existing_parquet = ParquetDataNode(
             "foo", Scope.SCENARIO, properties={"path": "nonexistent.parquet", "engine": engine}
         )
+        assert not_existing_parquet.read() is None
         with pytest.raises(NoData):
-            assert not_existing_parquet.read() is None
-            not_existing_parquet.read_or_raise()
+            _DataManagerFactory._build_manager()._read(not_existing_parquet)
 
     @pytest.mark.parametrize("engine", __engine)
     def test_read_parquet_file_pandas(self, engine, parquet_file_path):

@@ -150,9 +150,9 @@ class TestDataNode:
     def test_read_write(self):
         dn = FakeDataNode("foo_bar")
         _DataManagerFactory._build_manager()._repository._save(dn)
+        assert dn.read() is None
         with pytest.raises(NoData):
-            assert dn.read() is None
-            dn.read_or_raise()
+            _DataManagerFactory._build_manager()._read(dn)
         assert dn.write_has_been_called == 0
         assert dn.read_has_been_called == 0
         assert not dn.is_ready_for_reading
