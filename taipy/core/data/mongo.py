@@ -84,7 +84,7 @@ class MongoCollectionDataNode(DataNode):
         editor_expiration_date: Optional[datetime] = None,
         properties: Dict = None,
     ) -> None:
-        _check_dependency_is_installed("Mongo Data Node", "pymongo")
+        _check_dependency_is_installed("Mongo Data Node", "pymongo", "mongo")
         if properties is None:
             properties = {}
         required = self._REQUIRED_PROPERTIES
@@ -269,4 +269,3 @@ class MongoCollectionDataNode(DataNode):
             The document dictionary.
         """
         return document_object.__dict__
-

@@ -69,7 +69,6 @@ class S3ObjectDataNode(DataNode):
     __AWS_S3_GET_OBJECT_PARAMETERS = "aws_s3_get_object_parameters"
     __AWS_S3_PUT_OBJECT_PARAMETERS = "aws_s3_put_object_parameters"
 
-
     _REQUIRED_PROPERTIES: List[str] = [
         __AWS_ACCESS_KEY_ID,
         __AWS_SECRET_ACCESS_KEY,
@@ -93,7 +92,7 @@ class S3ObjectDataNode(DataNode):
         editor_expiration_date: Optional[datetime] = None,
         properties: Optional[Dict] = None,
     ) -> None:
-        _check_dependency_is_installed("S3 Data Node", "boto3")
+        _check_dependency_is_installed("S3 Data Node", "boto3", "s3")
         if properties is None:
             properties = {}
         required = self._REQUIRED_PROPERTIES
