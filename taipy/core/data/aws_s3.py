@@ -13,7 +13,7 @@ from datetime import datetime, timedelta
 from importlib import util
 from typing import Any, Dict, List, Optional, Set
 
-from ..common._check_dependencies import _check_dependency_is_installed
+from ...common._check_dependencies import _check_dependency_is_installed
 
 if util.find_spec("boto3"):
     import boto3

@@ -14,8 +14,8 @@ from importlib import util
 from inspect import isclass
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
+from ...common._check_dependencies import _check_dependency_is_installed
 from .._version._version_manager_factory import _VersionManagerFactory
-from ..common._check_dependencies import _check_dependency_is_installed
 from ..common.scope import Scope
 
 if util.find_spec("pymongo"):
